@@ -37,13 +37,13 @@
         zeroPoint.x = (x - axisOrigin.x);
         realValue.x = zeroPoint.x/scale;
         NSArray *testValues;
-        testValues = [NSArray arrayWithObjects: [NSNumber numberWithFloat:realValue.x],[NSNumber numberWithFloat:0],[NSNumber numberWithFloat:0], nil];
+        testValues = [NSArray arrayWithObjects: [NSNumber numberWithFloat:realValue.x], nil];
         [brain setTestVariableValue: testValues];              
         realValue.y = [brain performOperetion: @"nothing"];
         zeroPoint.y = realValue.y * scale;
         zeroPoint.y = realValue.y * scale;
         CGFloat function = axisOrigin.y-zeroPoint.y;
-        testValues = [NSArray arrayWithObjects: [NSNumber numberWithFloat:0],[NSNumber numberWithFloat:0],[NSNumber numberWithFloat:0], nil];
+        testValues = [NSArray arrayWithObjects: [NSNumber numberWithFloat:0], nil];
         [brain setTestVariableValue: testValues];
         
         if (!firstLine)

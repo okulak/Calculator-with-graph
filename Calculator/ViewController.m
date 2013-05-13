@@ -26,7 +26,6 @@
 @implementation ViewController
 @synthesize display;
 @synthesize secondDisplay;
-@synthesize equal;
 @synthesize userIsInTheMiddleOfEnteringANumber;
 @synthesize topOfTheLine;
 @synthesize brain = _brain;
@@ -40,31 +39,28 @@
     [super viewDidLoad];
     self.axesView.avBrain = self.brain;
     CGPoint midPoint;
-    CGFloat size;
+    CGFloat widhtOfView;
     midPoint.x = self.axesView.bounds.size.width/2;
     midPoint.y = self.axesView.bounds.size.height/2;
-    size = ((AxesView*)self.view).bounds.size.width;
+    widhtOfView = self.axesView.bounds.size.width;
     NSLog(@"midPoint in ViewController %f %f", midPoint.x, midPoint.y);
     self.axesView.midPoint = midPoint;
-    self.axesView.size = size;
+    self.axesView.size = widhtOfView;
 }
-
 
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewDidLoad];
     double result = [self.brain performOperetion:@"nothing"];
-    self.display.text = [NSString stringWithFormat:@"%g", result];   
-    
+    self.display.text = [NSString stringWithFormat:@"%g", result];     
 }
 
 - (CalculatorBrain *) brain
 {
     if (!_brain)
     {
-        _brain = [[CalculatorBrain alloc]init];
-        
+        _brain = [[CalculatorBrain alloc]init];        
     }
     return _brain;
 }
@@ -75,8 +71,7 @@
     NSString *digit = [sender currentTitle];
     if (self.userIsInTheMiddleOfEnteringANumber)
     {
-       self.display.Text = [self.display.text stringByAppendingString:digit];
-       
+       self.display.Text = [self.display.text stringByAppendingString:digit];       
     }
     else
     {
@@ -98,7 +93,7 @@
     }
     self.display.text = @"0";
     self.userIsInTheMiddleOfEnteringANumber = NO;    
-    if (topOfTheLine)
+    if (topOfTheLine && ![self.secondDisplay.text isEqualToString:@"Error"])
     {
         self.secondDisplay.text = [self.secondDisplay.text stringByAppendingString:@" "];
         self.secondDisplay.text = [self.secondDisplay.text stringByAppendingString:[self.brain lastObject]];        
@@ -120,7 +115,7 @@
     }
     NSString *operation = [sender currentTitle];
     double result = [self.brain performOperetion:operation];
-    NSString *secondResult = [self.brain performOperetion2];    
+    NSString *secondResult = [self.brain secondPerformOperetion];
     self.display.text = [NSString stringWithFormat:@"%g", result];
     self.secondDisplay.Text = [NSString stringWithFormat:@"%@", secondResult];
     checkForOperation = YES;
@@ -145,34 +140,35 @@
     self.display.text = [NSString stringWithFormat:@"0"];
     self.secondDisplay.text = [NSString stringWithFormat:@""];
     NSArray *testValues;
-    testValues = [NSArray arrayWithObjects:[NSNumber numberWithDouble: 0], [NSNumber numberWithDouble: 0], [NSNumber numberWithDouble: 0], nil];
+    testValues = [NSArray arrayWithObjects:[NSNumber numberWithDouble: 0], nil];
     [self.brain setTestVariableValue: testValues];
     self.userIsInTheMiddleOfEnteringANumber = NO;
     self.topOfTheLine = NO;
     checkForOperation = YES;
-     [self.axesView setNeedsDisplay];
+    [self.axesView setNeedsDisplay];
 }
 
 - (IBAction)setVariables:(id)sender
-{
-   
+{   
     double result = [self.brain performOperetion:@"nothing"];
-    NSString *secondResult = [self.brain performOperetion2];
+    NSString *secondResult = [self.brain secondPerformOperetion];
     self.display.text = [NSString stringWithFormat:@"%g", result];
     self.secondDisplay.Text = [NSString stringWithFormat:@"%@", secondResult];
     [self.axesView setNeedsDisplay];
-
 }
 
 - (IBAction)variablesPressed:(id)sender
 {
+    if (![self.display.text isEqual:@"0"])
+    {
+        [self enterPressed]; 
+    }
     checkForVariables = YES;
     checkForOperation = NO;
     NSString *digit = [sender currentTitle];
     if (self.userIsInTheMiddleOfEnteringANumber)
     {
-        self.display.Text = [self.display.text stringByAppendingString:digit];
-        
+        self.display.Text = [self.display.text stringByAppendingString:digit];        
     }
     else
     {
@@ -184,24 +180,21 @@
 
 - (IBAction)undoPressed
 {
-    if (self.userIsInTheMiddleOfEnteringANumber)
+    if (self.userIsInTheMiddleOfEnteringANumber && self.display.text.length > 0)
     {
-        if (self.display.text.length > 0)
+        NSMutableString *text = [self.display.text mutableCopy];
+        [text deleteCharactersInRange:NSMakeRange([text length]-1, 1)];
+        self.display.text = text;
+        if (!self.display.text.length)
         {
-            NSMutableString *text = [self.display.text mutableCopy];
-            [text deleteCharactersInRange:NSMakeRange([text length]-1, 1)];
-            self.display.text = text;
-            if (!self.display.text.length)
-            {
-                self.userIsInTheMiddleOfEnteringANumber= NO;
-            }
+            self.userIsInTheMiddleOfEnteringANumber= NO;           
         }
     }
     else
     {
         [self.brain deleteLastObject];
         double result = [self.brain performOperetion:@"nothing"];
-        NSString *secondResult = [self.brain performOperetion2];
+        NSString *secondResult = [self.brain secondPerformOperetion];
         self.display.text = [NSString stringWithFormat:@"%g", result];
         self.secondDisplay.Text = [NSString stringWithFormat:@"%@", secondResult];
     }   
@@ -234,11 +227,13 @@
     [self.axesView setNeedsDisplay];
 }
 
+
 - (void)setGraph:(int)graph
 {
     _graph = graph;
     [self.axesView setNeedsDisplay]; // any time our Model changes, redraw our View
 }
+
 
 - (void)setAxesView:(AxesView *)axesView
 {

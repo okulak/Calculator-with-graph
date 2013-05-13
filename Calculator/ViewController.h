@@ -14,8 +14,6 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *display;
 @property (weak, nonatomic) IBOutlet UILabel *secondDisplay;
-@property (weak, nonatomic) IBOutlet UILabel *equal;
-@property (weak, nonatomic) IBOutlet UILabel *variablesValue;
 @property (nonatomic) int graph;
 
 

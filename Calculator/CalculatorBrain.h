@@ -16,7 +16,7 @@
 - (void) pushVariable: (NSString *) variable;
 - (void) deleteLastObject;
 - (double) performOperetion: (NSString*) operation;
-- (NSString *) performOperetion2;
+- (NSString *) secondPerformOperetion;
 - (NSString *) lastObject;
 - (void) clearMemory;
 
@@ -25,7 +25,7 @@
 @property (strong, nonatomic) NSArray *testVariableValue;
 
 + (double) runProgram: (id) program;
-//+ (NSString *) runSecondProgram: (id) program;
++ (NSString *) runSecondProgram: (id) program;
 + (double)runProgram:(id)program usingVariableValues:(NSDictionary *)variableValues;
 + (NSString *) descriptionOfProgram: (id) program;
 @end

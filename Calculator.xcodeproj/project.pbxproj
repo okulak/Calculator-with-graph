@@ -8,11 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8E350CF717391B3800E33D8E /* AxesDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E350CF617391B3800E33D8E /* AxesDrawer.m */; };
-		8E350CF817391B3800E33D8E /* AxesDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E350CF617391B3800E33D8E /* AxesDrawer.m */; };
 		8E350CFF17391F0F00E33D8E /* AxesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E350CFE17391F0F00E33D8E /* AxesView.m */; };
-		8E350D0017391F0F00E33D8E /* AxesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E350CFE17391F0F00E33D8E /* AxesView.m */; };
 		8E350D03173923A600E33D8E /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E350D02173923A600E33D8E /* GraphViewController.m */; };
-		8E350D04173923A600E33D8E /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E350D02173923A600E33D8E /* GraphViewController.m */; };
 		8E468BA9173D3F1900593C2E /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E468BA8173D3F1800593C2E /* Storyboard.storyboard */; };
 		8E468BAA173D3F1900593C2E /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E468BA8173D3F1800593C2E /* Storyboard.storyboard */; };
 		8E71ECCE17256E25008C63C6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E71ECCD17256E25008C63C6 /* SenTestingKit.framework */; };
@@ -33,7 +30,6 @@
 		8EA063DF1718125D00A7EE2C /* CalculatorBrain.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EA063DE1718125D00A7EE2C /* CalculatorBrain.m */; };
 		8EA1332E17268CB800732C91 /* CalculatorBrain.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EA063DE1718125D00A7EE2C /* CalculatorBrain.m */; };
 		8EB71B04173A3CEE0080CD0F /* GraphDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EB71B03173A3CEE0080CD0F /* GraphDrawer.m */; };
-		8EB71B05173A3CEE0080CD0F /* GraphDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EB71B03173A3CEE0080CD0F /* GraphDrawer.m */; };
 		8EC76F131726CCD400CE8F2E /* CalculatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E71ECD817256E25008C63C6 /* CalculatorTest.m */; };
 /* End PBXBuildFile section */
 
@@ -299,10 +295,6 @@
 			files = (
 				8EA1332E17268CB800732C91 /* CalculatorBrain.m in Sources */,
 				8EC76F131726CCD400CE8F2E /* CalculatorTest.m in Sources */,
-				8E350CF817391B3800E33D8E /* AxesDrawer.m in Sources */,
-				8E350D0017391F0F00E33D8E /* AxesView.m in Sources */,
-				8E350D04173923A600E33D8E /* GraphViewController.m in Sources */,
-				8EB71B05173A3CEE0080CD0F /* GraphDrawer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -23,8 +23,9 @@
 - (id)init
 {
     self = [super init];
-    if (self) {
-        [self setTestVariableValue:[NSArray arrayWithObjects:@0, @0, @0, nil]];
+    if (self)
+    {
+        [self setTestVariableValue:[NSArray arrayWithObjects:@0, nil]];
     }
     return self;
 }
@@ -60,7 +61,7 @@
 
 - (double) performOperetion: (NSString*) operation
 {    
-    NSArray *keys = [NSArray arrayWithObjects:@"x", @"a", @"b", nil];
+    NSArray *keys = [NSArray arrayWithObjects:@"x", nil];
     NSDictionary *variableValues = [NSDictionary dictionaryWithObjects:self.testVariableValue forKeys:keys];
     if (![operation isEqualToString:@"nothing"])
     {
@@ -69,9 +70,9 @@
     return [CalculatorBrain runProgram: self.program usingVariableValues:variableValues];
 }
 
-- (NSString *) performOperetion2
+- (NSString *) secondPerformOperetion
 {
-    return [CalculatorBrain runProgram2:self.program];
+    return [CalculatorBrain runSecondProgram:self.program];
 }
 
 - (id) program;
@@ -84,80 +85,64 @@
 {
     NSSet *twoOperand = [NSSet setWithObjects:@"+", @"-", @"*", @"/",nil];
     NSSet *oneOperand = [NSSet setWithObjects:@"sqrt", @"sin", @"cos",nil];
-    NSSet *noOperand = [NSSet setWithObjects:@"π",nil];
-    NSString *result = @"";
+    NSString *result = @"Error";
     NSMutableArray *stack = program;
     for (int i=0; i<[stack count]; i++)
     {
-        if ([noOperand  containsObject: [stack objectAtIndex: i]])
-        {
-            result = @"π";
-        }
-        else if ([oneOperand  containsObject: [stack objectAtIndex: i]] && i >= 1)
-        {
-            NSString *object = [NSString stringWithFormat:@"%@",[stack objectAtIndex: (i-1)]];
-            if ([object characterAtIndex: 0] == '(')
-            {
-                result = [NSString stringWithFormat:@"%@(%@)", [stack objectAtIndex:i], [stack objectAtIndex: (i-1)]];
+#define LAST_OBJECT [stack objectAtIndex: i]
+#define PREVIOUS_OBJECT [stack objectAtIndex: i-1]
+#define PREPREVIOUS_OBJECT [stack objectAtIndex: i-2]
                 
-            }
-            else
-            {
-                result = [NSString stringWithFormat:@"%@(%@)", [stack objectAtIndex:i], [stack objectAtIndex: (i-1)]];
-            }            
-            [stack replaceObjectAtIndex:i withObject:result];
-            [stack removeObjectAtIndex: (i-1)];
-            result = [self descriptionOfProgram:stack];
+        if ([oneOperand  containsObject: LAST_OBJECT] && i >= 1)
+        {                      
+        result = [NSString stringWithFormat:@"%@(%@)", LAST_OBJECT, PREVIOUS_OBJECT];
+        [stack replaceObjectAtIndex:i withObject:result];
+        [stack removeObjectAtIndex: (i-1)];
+        result = [self descriptionOfProgram:stack];
         }
-        else if ([oneOperand  containsObject: [stack objectAtIndex: i]] && i < 1)
+        else if ([oneOperand  containsObject: LAST_OBJECT] && i < 1)
         {
             result = [NSString stringWithFormat:@"Error"];
         }
-
-        else if ([twoOperand  containsObject: [stack objectAtIndex: i]] && i >= 2)
+        else if ([twoOperand  containsObject: LAST_OBJECT] && i >= 2)
         {
-            if ([[stack objectAtIndex: i] isEqualToString:@"*"] || [[stack objectAtIndex: i] isEqualToString:@"/"])
+            if ([LAST_OBJECT isEqualToString:@"*"] || [LAST_OBJECT isEqualToString:@"/"])
             {
-                if ([[stack objectAtIndex:(i-1)] isKindOfClass:[NSString class]] && [[stack objectAtIndex:(i-1)] length] > 1)
+                if ([PREVIOUS_OBJECT isKindOfClass:[NSString class]] && [PREVIOUS_OBJECT length] > 1 && ([PREVIOUS_OBJECT rangeOfString:@"+"].location != NSNotFound || [PREVIOUS_OBJECT rangeOfString:@"-"].location != NSNotFound))
                 {
-                    if ([[stack objectAtIndex:(i-1)] rangeOfString:@"+"].location != NSNotFound || [[stack objectAtIndex:(i-1)] rangeOfString:@"-"].location != NSNotFound)
+                    NSString *firstOperand = @"Error";
+                    if ([PREPREVIOUS_OBJECT isKindOfClass:[NSString class]] && ([PREPREVIOUS_OBJECT rangeOfString:@"+"].location != NSNotFound || [PREPREVIOUS_OBJECT rangeOfString:@"-"].location != NSNotFound))
                     {
-                        NSString *firstOperand;
-                        if ([[stack objectAtIndex:(i-2)] isKindOfClass:[NSString class]])
-                        {
-                            if ([[stack objectAtIndex:(i-2)] rangeOfString:@"+"].location != NSNotFound || [[stack objectAtIndex:(i-2)] rangeOfString:@"-"].location != NSNotFound)
-                            {
-                                firstOperand = [NSString stringWithFormat:@"(%@)", [stack objectAtIndex:(i-2)]];
-                            }
-                        }
-                        else
-                        {
-                            firstOperand = [NSString stringWithFormat:@"%@", [stack objectAtIndex:(i-2)]];
-                        }
-                        result = [NSString stringWithFormat:@"%@ %@ (%@)", firstOperand, [stack objectAtIndex:i], [stack objectAtIndex:(i-1)]];
-                    }                                    }
-                else if ([[stack objectAtIndex:(i-2)] isKindOfClass:[NSString class]] && [[stack objectAtIndex:(i-2)] length] > 1)
+                        firstOperand = [NSString stringWithFormat:@"(%@)", PREPREVIOUS_OBJECT];
+                    }
+                    else
+                    {
+                        firstOperand = [NSString stringWithFormat:@"%@", PREPREVIOUS_OBJECT];
+                    }
+                    result = [NSString stringWithFormat:@"%@ %@ (%@)", firstOperand, LAST_OBJECT, PREVIOUS_OBJECT];
+                }
+                else if ([PREPREVIOUS_OBJECT isKindOfClass:[NSString class]] && [PREPREVIOUS_OBJECT length] > 1)
                 {
-                    result = [NSString stringWithFormat:@"(%@) %@ %@", [stack objectAtIndex:(i-2)], [stack objectAtIndex:i], [stack objectAtIndex:(i-1)]];
+                    result = [NSString stringWithFormat:@"(%@) %@ %@", PREPREVIOUS_OBJECT, LAST_OBJECT, PREVIOUS_OBJECT];
                 }
                 else
                 {
-                     result = [NSString stringWithFormat:@"%@ %@ %@", [stack objectAtIndex:(i-2)], [stack objectAtIndex:i], [stack objectAtIndex:(i-1)]];
+                    result = [NSString stringWithFormat:@"%@ %@ %@", PREPREVIOUS_OBJECT, LAST_OBJECT, PREVIOUS_OBJECT];
                 }
             }
             else
             {
-                result = [NSString stringWithFormat:@"%@ %@ %@", [stack objectAtIndex:(i-2)], [stack objectAtIndex:i], [stack objectAtIndex:(i-1)]];
+                result = [NSString stringWithFormat:@"%@ %@ %@", PREPREVIOUS_OBJECT, LAST_OBJECT, PREVIOUS_OBJECT];
             }            
             [stack replaceObjectAtIndex:i withObject:result];
             [stack removeObjectAtIndex:i-1];
             [stack removeObjectAtIndex:i-2];
             result = [self descriptionOfProgram:stack];           
         }
-        else if ([twoOperand  containsObject: [stack objectAtIndex: i]] && i < 2)
+        else if ([twoOperand  containsObject: LAST_OBJECT] && i < 2)
         {
-            result = [NSString stringWithFormat:@"Error"];        }
-
+            result = [NSString stringWithFormat:@"Error"];
+        }
         else
         {            
             if ([stack count])
@@ -255,7 +240,7 @@
     return [self popOperandOffStack: stack];
 }
 
-+ (NSString *) runProgram2:(id)program
++ (NSString *) runSecondProgram:(id)program
 {
     NSMutableArray *stack;
     if ([program isKindOfClass:[NSArray class]])
@@ -275,15 +260,14 @@
     }
     for (int i=0; i<[stack count]; i++)
     {
-        NSArray *keys = [NSArray arrayWithObjects:@"x", @"a", @"b", nil];
+        NSArray *keys = [NSArray arrayWithObjects:@"x", nil];
         NSSet *variables = [[NSSet alloc] initWithArray:keys];
 
-        if ([variables  containsObject: [stack objectAtIndex: i]])
+        if ([variables  containsObject: LAST_OBJECT])
         {
-            [stack replaceObjectAtIndex:i withObject:[variableValues objectForKey:[stack objectAtIndex: i]]];        
+            [stack replaceObjectAtIndex:i withObject:[variableValues objectForKey:LAST_OBJECT]];
         }
-    }
-    
+    }    
     return [self popOperandOffStack: stack];
    }
 

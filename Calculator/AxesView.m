@@ -11,48 +11,48 @@
 #import "GraphDrawer.h"
 #import "CalculatorBrain.h"
 
+@interface AxesView ()
+
+
+@end
+
 @implementation AxesView
 @synthesize scale = _scale;
 @synthesize avBrain = _avBrain;
 @synthesize midPoint = _midPoint;
 @synthesize size = _size;
 
-
 #define DEFAULT_SCALE 10
-
-
-//- (void) setMidPoint:(CGPoint)midPoint
-//{
-//    midPoint = _midPoint;
-//    
-//    NSLog(@"%@", midPoint);
-//}
 
 - (CGFloat)scale
 {
-    if (!_scale) {
-        return DEFAULT_SCALE; // don't allow zero scale
-    } else {
+    if (!_scale)
+    {
+        return DEFAULT_SCALE;
+    }
+    else
+    {
         return _scale;
     }
 }
 
 - (void)setScale:(CGFloat)scale
 {
-    if (scale != _scale) {
+    if (scale != _scale)
+    {
         _scale = scale;
         [self setNeedsDisplay]; // any time our scale changes, call for redraw
     }
 }
 
-
 - (void)pinch:(UIPinchGestureRecognizer *)gesture
 {
     if ((gesture.state == UIGestureRecognizerStateChanged) ||
-        (gesture.state == UIGestureRecognizerStateEnded)) {
+       (gesture.state == UIGestureRecognizerStateEnded))
+    {
         self.scale *= gesture.scale; // adjust our scale
-        gesture.scale = 1;           // reset gestures scale to 1 (so future changes are incremental, not cumulative)
-    }
+        gesture.scale = 1;          // reset gestures scale to 1 (so future changes are incremental, not cumulative)       
+    }    
 }
 
 - (void)setup
@@ -75,7 +75,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setup]; // get initialized if someone uses alloc/initWithFrame: to create us
+    [self setup]; 
     }
     return self;
 }
@@ -86,13 +86,9 @@
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 1.0);
-    [[UIColor redColor] setStroke];
-    
-    NSLog(@"midPoint in AxesView %f %f", self.midPoint.x, self.midPoint.y);
+    [[UIColor redColor] setStroke];   
     [AxesDrawer drawAxesInRect:self.bounds originAtPoint:[self midPoint] scale: self.scale];
     [GraphDrawer drawGraphInRect:self.bounds originAtPoint:[self midPoint] scale: self.scale withBrain:self.avBrain withSize: self.size];
-    
-
 }
 
 - (void) setAvBrain:(CalculatorBrain *)avBrain

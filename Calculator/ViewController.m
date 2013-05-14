@@ -13,6 +13,9 @@
 #import "AxesView.h"
 
 @interface ViewController ()
+{
+    NSUserDefaults *_userDefaults;
+}
 
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
 @property (nonatomic, strong) CalculatorBrain *brain;
@@ -33,6 +36,7 @@
 @synthesize checkForVariables;
 @synthesize axesView = _axesView;
 @synthesize graph = _graph;
+@synthesize lastScale = _lastScale;
 
 - (void)viewDidLoad
 {
@@ -40,12 +44,17 @@
     self.axesView.avBrain = self.brain;
     CGPoint midPoint;
     CGFloat widhtOfView;
-    midPoint.x = self.axesView.bounds.size.width/2;
-    midPoint.y = self.axesView.bounds.size.height/2;
+    midPoint.x = [_userDefaults floatForKey:@"Mid point by x"];
+    midPoint.y = [_userDefaults floatForKey:@"Mid point by y"];
+    if (!midPoint.x || !midPoint.y)
+    {
+        midPoint.x = self.view.bounds.size.width/2;
+        midPoint.y = self.view.bounds.size.height/2;
+    }
     widhtOfView = self.axesView.bounds.size.width;
-    NSLog(@"midPoint in ViewController %f %f", midPoint.x, midPoint.y);
     self.axesView.midPoint = midPoint;
     self.axesView.size = widhtOfView;
+    self.axesView.scale = [_userDefaults floatForKey:@"Last scale"]; 
 }
 
 
@@ -55,6 +64,17 @@
     double result = [self.brain performOperetion:@"nothing"];
     self.display.text = [NSString stringWithFormat:@"%g", result];     
 }
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    CGFloat lastScale = self.axesView.scale;
+    CGPoint midPoint =  self.axesView.midPoint;
+    _userDefaults = [NSUserDefaults standardUserDefaults];
+    [_userDefaults setFloat: lastScale forKey:@"Last scale"];
+    [_userDefaults setFloat: midPoint.x forKey:@"Mid point by x"];
+    [_userDefaults setFloat: midPoint.y forKey:@"Mid point by y"];
+}
+
 
 - (CalculatorBrain *) brain
 {

@@ -10,6 +10,10 @@
 #import "AxesView.h"
 
 @interface GraphViewController()
+{
+    NSUserDefaults *_userDefaults;
+}
+
 @property (nonatomic, weak) IBOutlet AxesView *axesView;
 
 @end
@@ -19,6 +23,7 @@
 @synthesize graph = _graph;
 @synthesize axesView = _axesView;
 @synthesize gvcBrain = _gvcBrain;
+
 
 - (IBAction)handTap:(UITapGestureRecognizer *)sender
 {
@@ -40,17 +45,35 @@
     [self.axesView setNeedsDisplay];
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+     _userDefaults = [NSUserDefaults standardUserDefaults];
     ((AxesView*)self.view).avBrain = self.gvcBrain;
     CGPoint midPoint;
+    midPoint.x = [_userDefaults floatForKey:@"Mid point by x"];
+    midPoint.y = [_userDefaults floatForKey:@"Mid point by y"];
+    if (!midPoint.x || !midPoint.y)
+    {
+        midPoint.x = self.view.bounds.size.width/2;
+        midPoint.y = self.view.bounds.size.height/2;
+    }    
     CGFloat size;
-    size = self.axesView.bounds.size.width;
-    midPoint.x = self.view.bounds.size.width/2;
-    midPoint.y = self.view.bounds.size.height/2;
+    size = self.axesView.bounds.size.width;   
     ((AxesView*)self.view).midPoint = midPoint;
-   ((AxesView*)self.view).size = size;
+    ((AxesView*)self.view).size = size;   
+    ((AxesView*)self.view).scale = [_userDefaults floatForKey:@"Last scale"];    
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    CGFloat lastScale = ((AxesView*)self.view).scale;
+    CGPoint midPoint =  ((AxesView*)self.view).midPoint;
+    _userDefaults = [NSUserDefaults standardUserDefaults];
+    [_userDefaults setFloat: lastScale forKey:@"Last scale"];
+    [_userDefaults setFloat: midPoint.x forKey:@"Mid point by x"];
+    [_userDefaults setFloat: midPoint.y forKey:@"Mid point by y"];    
 }
 
 - (void)setGraph:(int)graph
@@ -65,7 +88,6 @@
     // enable pinch gestures in the FaceView using its pinch: handler
     [self.axesView addGestureRecognizer:[[UIPinchGestureRecognizer alloc] initWithTarget:self.axesView action:@selector(pinch:)]];
 }
-
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation

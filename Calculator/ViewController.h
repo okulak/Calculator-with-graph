@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *display;
 @property (weak, nonatomic) IBOutlet UILabel *secondDisplay;
 @property (nonatomic) int graph;
+@property (nonatomic) CGFloat lastScale;
 
 
 @end

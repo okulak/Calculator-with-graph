@@ -409,6 +409,7 @@
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="ZD4-0a-lFI" appends="YES" id="R09-LO-2pP"/>
                             <outletCollection property="gestureRecognizers" destination="rLs-8T-bM9" appends="YES" id="6pL-Gh-Wli"/>
+                            <outletCollection property="gestureRecognizers" destination="rOZ-ZW-Iaq" appends="YES" id="MsR-E6-jol"/>
                         </connections>
                     </view>
                     <navigationItem key="navigationItem" id="PLS-Y1-cwi"/>
@@ -427,6 +428,11 @@
                         <action selector="handTap:" destination="1OK-I7-Kt5" id="zJX-ZH-l6Q"/>
                     </connections>
                 </tapGestureRecognizer>
+                <pinchGestureRecognizer id="rOZ-ZW-Iaq">
+                    <connections>
+                        <action selector="pinch:" destination="1OK-I7-Kt5" id="gwX-6Q-mwA"/>
+                    </connections>
+                </pinchGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1455" y="133"/>
         </scene>
@@ -457,7 +463,6 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GraphViewController.h"/>
             <relationships>
                 <relationship kind="action" name="controlPan:" candidateClass="UIPanGestureRecognizer"/>
-                <relationship kind="action" name="handTap:" candidateClass="UITapGestureRecognizer"/>
                 <relationship kind="outlet" name="axesView" candidateClass="AxesView"/>
             </relationships>
         </class>
@@ -473,9 +478,7 @@
                 <relationship kind="action" name="variablesPressed:"/>
                 <relationship kind="outlet" name="axesView" candidateClass="AxesView"/>
                 <relationship kind="outlet" name="display" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="equal" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="secondDisplay" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="variablesValue" candidateClass="UILabel"/>
             </relationships>
         </class>
     </classes>

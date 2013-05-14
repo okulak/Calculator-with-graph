@@ -21,15 +21,12 @@
 
 + (void)drawGraphInRect:(CGRect)bounds originAtPoint:(CGPoint)axisOrigin scale:(CGFloat)scale withBrain: (CalculatorBrain*) brain withSize:(CGFloat)size
 {
-
-    NSLog(@"programStack %@", [brain program]);
     CGContextRef context = UIGraphicsGetCurrentContext();
 	UIGraphicsPushContext(context);
     CGContextSetLineWidth(context, 2.0);
     [[UIColor blueColor] setStroke];
     CGContextBeginPath(context);
    	BOOL firstLine = NO;
-    NSLog(@"axesOrigin %f", size);
     for ( CGFloat x = 0; x <= size; x+=0.5)
     {
         CGPoint zeroPoint;
@@ -44,13 +41,11 @@
         zeroPoint.y = realValue.y * scale;
         CGFloat function = axisOrigin.y-zeroPoint.y;
         testValues = [NSArray arrayWithObjects: [NSNumber numberWithFloat:0], nil];
-        [brain setTestVariableValue: testValues];
-        
+        [brain setTestVariableValue: testValues];        
         if (!firstLine)
         {
             CGContextMoveToPoint(context, x, function);
-            firstLine = YES;
-                 
+            firstLine = YES;                 
         }
         else if (!realValue.y || !isfinite(realValue.y))
         {
@@ -60,13 +55,10 @@
         else
         {       
            CGContextAddLineToPoint(context,x, function);  
-        }
-        
-        
+        }        
     }
     CGContextStrokePath(context);
     [[UIColor greenColor] setFill];    
-	UIGraphicsPopContext();
-    
+	UIGraphicsPopContext();    
 }
 @end

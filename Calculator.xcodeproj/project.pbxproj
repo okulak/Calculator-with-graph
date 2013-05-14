@@ -68,6 +68,7 @@
 		8EA063DE1718125D00A7EE2C /* CalculatorBrain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalculatorBrain.m; sourceTree = "<group>"; };
 		8EB71B02173A3CEE0080CD0F /* GraphDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawer.h; sourceTree = "<group>"; };
 		8EB71B03173A3CEE0080CD0F /* GraphDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphDrawer.m; sourceTree = "<group>"; };
+		8EBEB4E11742857D00A672CD /* BrainDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrainDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +164,7 @@
 				8EA063DE1718125D00A7EE2C /* CalculatorBrain.m */,
 				8EA063D51717F44D00A7EE2C /* ViewController.h */,
 				8EA063D61717F44D00A7EE2C /* ViewController.m */,
+				8EBEB4E11742857D00A672CD /* BrainDelegate.h */,
 				8EA063C11717F44D00A7EE2C /* Supporting Files */,
 			);
 			path = Calculator;

@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BrainDelegate.h"
 
 @class CalculatorBrain;
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <BrainDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *display;
 @property (weak, nonatomic) IBOutlet UILabel *secondDisplay;

@@ -12,6 +12,9 @@
 #import "GraphViewController.h"
 #import "AxesView.h"
 
+
+
+
 @interface ViewController ()
 {
     NSUserDefaults *_userDefaults;
@@ -224,7 +227,7 @@
 {
     //TODO pass brain to GraphView
     GraphViewController *gvc= (GraphViewController*)segue.destinationViewController;    
-    gvc.gvcBrain = self.brain;
+    gvc.delegate = self;
 }
 
 - (IBAction)controlPan:(UIPanGestureRecognizer *)recognizer

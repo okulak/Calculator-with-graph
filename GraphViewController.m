@@ -22,7 +22,7 @@
 
 @synthesize graph = _graph;
 @synthesize axesView = _axesView;
-@synthesize gvcBrain = _gvcBrain;
+
 
 
 - (IBAction)handTap:(UITapGestureRecognizer *)sender
@@ -50,7 +50,7 @@
 {
     [super viewDidLoad];
      _userDefaults = [NSUserDefaults standardUserDefaults];
-    ((AxesView*)self.view).avBrain = self.gvcBrain;
+    ((AxesView*)self.view).avBrain = [self.delegate brain];
     CGPoint midPoint;
     midPoint.x = [_userDefaults floatForKey:@"Mid point by x"];
     midPoint.y = [_userDefaults floatForKey:@"Mid point by y"];

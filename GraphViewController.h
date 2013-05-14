@@ -7,13 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BrainDelegate.h"
+
 
 @class ViewController;
 @class CalculatorBrain;
 
-@interface GraphViewController : UIViewController
+@interface GraphViewController : UIViewController 
 
 @property (nonatomic) int graph;
-@property (nonatomic, strong) CalculatorBrain *gvcBrain;
+@property (nonatomic, weak) id <BrainDelegate> delegate;
 
 @end

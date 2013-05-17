@@ -246,7 +246,6 @@
        forPopoverController:(UIPopoverController *)pc
 {
     barButtonItem.title = self.navigationItem.title;
-    NSLog(@"%@", self.title);
     [self splitViewBarButtonItemPresenter].splitViewBarButtonItem = barButtonItem;
 }
 
@@ -261,6 +260,22 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     return YES; // support all orientations
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UIDeviceOrientation deviceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+        BOOL isPortrait = UIDeviceOrientationIsPortrait(deviceOrientation);
+        
+        if (isPortrait) {
+            self.navigationController.navigationBarHidden = YES;
+        } else {
+            self.navigationController.navigationBarHidden = NO;
+        }
+    }
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
 }
 
 @end

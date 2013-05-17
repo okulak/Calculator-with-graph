@@ -91,10 +91,10 @@
     [GraphDrawer drawGraphInRect:self.bounds originAtPoint:[self midPoint] scale: self.scale withBrain:self.avBrain withSize: self.size];
 }
 
-- (void) setAvBrain:(CalculatorBrain *)avBrain
-{
-    _avBrain = avBrain;
-}
+//- (void) setAvBrain:(CalculatorBrain *)avBrain
+//{
+//    _avBrain = avBrain;
+//}
 
 
 @end

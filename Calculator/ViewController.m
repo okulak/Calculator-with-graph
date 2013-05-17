@@ -16,16 +16,12 @@
 
 
 @interface ViewController ()
-{
-    NSUserDefaults *_userDefaults;
-}
 
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
 @property (nonatomic, strong) CalculatorBrain *brain;
 @property (nonatomic) BOOL topOfTheLine;
 @property (nonatomic) BOOL checkForOperation;
 @property (nonatomic) BOOL checkForVariables;
-@property (nonatomic, weak) IBOutlet AxesView *axesView;
 
 @end
 
@@ -37,45 +33,26 @@
 @synthesize brain = _brain;
 @synthesize checkForOperation;
 @synthesize checkForVariables;
-@synthesize axesView = _axesView;
-@synthesize graph = _graph;
-@synthesize lastScale = _lastScale;
 
-- (void)viewDidLoad
+
+
+- (GraphViewController *)splitViewGraphViewController
 {
-    [super viewDidLoad];
-    self.axesView.avBrain = self.brain;
-    CGPoint midPoint;
-    CGFloat widhtOfView;
-    midPoint.x = [_userDefaults floatForKey:@"Mid point by x"];
-    midPoint.y = [_userDefaults floatForKey:@"Mid point by y"];
-    if (!midPoint.x || !midPoint.y)
-    {
-        midPoint.x = self.view.bounds.size.width/2;
-        midPoint.y = self.view.bounds.size.height/2;
+    id gvc = [self.splitViewController.viewControllers lastObject];
+    if (![gvc isKindOfClass:[GraphViewController class]]) {
+        gvc = nil;
     }
-    widhtOfView = self.axesView.bounds.size.width;
-    self.axesView.midPoint = midPoint;
-    self.axesView.size = widhtOfView;
-    self.axesView.scale = [_userDefaults floatForKey:@"Last scale"]; 
+    return gvc;
 }
 
-
-- (void)viewWillAppear:(BOOL)animated
+- (void)setAndShowGraph:(CalculatorBrain *)brain
 {
-    [super viewDidLoad];
-    double result = [self.brain performOperetion:@"nothing"];
-    self.display.text = [NSString stringWithFormat:@"%g", result];     
-}
-
-- (void) viewWillDisappear:(BOOL)animated
-{
-    CGFloat lastScale = self.axesView.scale;
-    CGPoint midPoint =  self.axesView.midPoint;
-    _userDefaults = [NSUserDefaults standardUserDefaults];
-    [_userDefaults setFloat: lastScale forKey:@"Last scale"];
-    [_userDefaults setFloat: midPoint.x forKey:@"Mid point by x"];
-    [_userDefaults setFloat: midPoint.y forKey:@"Mid point by y"];
+    if ([self splitViewGraphViewController])
+    {                      // if in split view
+        [self splitViewGraphViewController].gvBrain = brain;
+        [[self splitViewGraphViewController] axesViewSetNeedDisplay];
+        
+    }
 }
 
 
@@ -168,7 +145,7 @@
     self.userIsInTheMiddleOfEnteringANumber = NO;
     self.topOfTheLine = NO;
     checkForOperation = YES;
-    [self.axesView setNeedsDisplay];
+    [self setAndShowGraph:self.brain];
 }
 
 - (IBAction)setVariables:(id)sender
@@ -177,7 +154,7 @@
     NSString *secondResult = [self.brain secondPerformOperetion];
     self.display.text = [NSString stringWithFormat:@"%g", result];
     self.secondDisplay.Text = [NSString stringWithFormat:@"%@", secondResult];
-    [self.axesView setNeedsDisplay];
+    [self setAndShowGraph:self.brain];
 }
 
 - (IBAction)variablesPressed:(id)sender
@@ -230,39 +207,60 @@
     gvc.delegate = self;
 }
 
-- (IBAction)controlPan:(UIPanGestureRecognizer *)recognizer
+
+- (void)awakeFromNib  // always try to be the split view's delegate
 {
-    CGPoint translation = [recognizer translationInView:self.axesView];
-    CGPoint newMidPoint;
-    newMidPoint.x = self.axesView.midPoint.x + translation.x;
-    newMidPoint.y = self.axesView.midPoint.y + translation.y;
-    self.axesView.midPoint = newMidPoint;
-    [recognizer setTranslation:CGPointMake(0,0) inView:self.view];
-    [self.axesView setNeedsDisplay];
+    [super awakeFromNib];
+    self.splitViewController.delegate = self;
 }
 
-- (IBAction)handTap:(UITapGestureRecognizer *)sender
+- (id <SplitViewBarButtonItemPresenter>)splitViewBarButtonItemPresenter
 {
-    CGPoint midPoint;
-    midPoint.x = self.axesView.bounds.size.width/2;
-    midPoint.y = self.axesView.bounds.size.height/2;
-    self.axesView.midPoint = midPoint;
-    [self.axesView setNeedsDisplay];
+    id detailVC = [self.splitViewController.viewControllers lastObject];
+    if (![detailVC conformsToProtocol:@protocol(SplitViewBarButtonItemPresenter)]) {
+        detailVC = nil;
+    }
+    return detailVC;
+}
+
+- (id <BrainDelegate>)brainPresenter
+{
+    id brainVC = [self.splitViewController.viewControllers lastObject];
+    if (![brainVC conformsToProtocol:@protocol(SplitViewBarButtonItemPresenter)]) {
+        brainVC = nil;
+    }
+    return brainVC;
 }
 
 
-- (void)setGraph:(int)graph
+- (BOOL)splitViewController:(UISplitViewController *)svc
+   shouldHideViewController:(UIViewController *)vc
+              inOrientation:(UIInterfaceOrientation)orientation
 {
-    _graph = graph;
-    [self.axesView setNeedsDisplay]; // any time our Model changes, redraw our View
+    return [self splitViewBarButtonItemPresenter] ? UIInterfaceOrientationIsPortrait(orientation) : NO;
+}
+
+- (void)splitViewController:(UISplitViewController *)svc
+     willHideViewController:(UIViewController *)aViewController
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem
+       forPopoverController:(UIPopoverController *)pc
+{
+    barButtonItem.title = self.navigationItem.title;
+    NSLog(@"%@", self.title);
+    [self splitViewBarButtonItemPresenter].splitViewBarButtonItem = barButtonItem;
+}
+
+- (void)splitViewController:(UISplitViewController *)svc
+     willShowViewController:(UIViewController *)aViewController
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+{
+       [self splitViewBarButtonItemPresenter].splitViewBarButtonItem = nil;
 }
 
 
-- (void)setAxesView:(AxesView *)axesView
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    _axesView = axesView;
-    // enable pinch gestures in the FaceView using its pinch: handler
-    [self.axesView addGestureRecognizer:[[UIPinchGestureRecognizer alloc] initWithTarget:self.axesView action:@selector(pinch:)]];
+    return YES; // support all orientations
 }
 
 @end

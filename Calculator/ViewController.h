@@ -8,15 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "BrainDelegate.h"
+#import "SplitViewBarButtonItemPresenter.h"
 
 @class CalculatorBrain;
 
-@interface ViewController : UIViewController <BrainDelegate>
+@interface ViewController : UIViewController <BrainDelegate, UISplitViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *display;
 @property (weak, nonatomic) IBOutlet UILabel *secondDisplay;
-@property (nonatomic) int graph;
-@property (nonatomic) CGFloat lastScale;
 
 
 @end

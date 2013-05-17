@@ -51,7 +51,6 @@
     {                      // if in split view
         [self splitViewGraphViewController].gvBrain = brain;
         [[self splitViewGraphViewController] axesViewSetNeedDisplay];
-        
     }
 }
 
@@ -204,7 +203,7 @@
 {
     //TODO pass brain to GraphView
     GraphViewController *gvc= (GraphViewController*)segue.destinationViewController;    
-    gvc.delegate = self;
+    gvc.gvBrain = self.brain;
 }
 
 

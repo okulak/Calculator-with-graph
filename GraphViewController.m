@@ -85,7 +85,9 @@ static GraphViewController* settings = nil;
 {
     [super viewDidLoad];
     [self axesViewSetNeedDisplay];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.masterPopoverController = [[UIPopoverController alloc] initWithContentViewController:[self.splitViewController.viewControllers objectAtIndex:0]];
+    }
 }
 
 -(void)test:(id)sender

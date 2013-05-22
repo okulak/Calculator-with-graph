@@ -21,6 +21,7 @@
 @property (nonatomic, weak) id <BrainDelegate> delegate;
 @property (nonatomic) CalculatorBrain * gvBrain;
 @property (nonatomic) UIPopoverController *masterPopoverController;
+@property (nonatomic) UIPopoverController *favoritesPopoverController;
 
 - (void) axesViewSetNeedDisplay;
 

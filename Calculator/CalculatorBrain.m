@@ -19,6 +19,7 @@
 @synthesize programStack = _programStack;
 @synthesize topOfTheLine;
 @synthesize testVariableValue = _testVariableValue;
+@synthesize program = _program;
 
 - (id)init
 {
@@ -59,6 +60,11 @@
     [self.programStack addObject:variable];
 }
 
+- (void) updateWithProgram: (NSArray*)program
+{
+    [self.programStack addObjectsFromArray:program];
+}
+
 - (double) performOperetion: (NSString*) operation
 {    
     NSArray *keys = [NSArray arrayWithObjects:@"x", nil];
@@ -75,18 +81,17 @@
     return [CalculatorBrain runSecondProgram:self.program];
 }
 
-- (id) program;
+- (id) program
 {
     return [self.programStack mutableCopy];
 }
 
-
-+ (NSString *) descriptionOfProgram:(id) program
++ (NSString *) descriptionOfProgram:(NSArray*) program
 {
     NSSet *twoOperand = [NSSet setWithObjects:@"+", @"-", @"*", @"/",nil];
     NSSet *oneOperand = [NSSet setWithObjects:@"sqrt", @"sin", @"cos",nil];
     NSString *result = @"Error";
-    NSMutableArray *stack = program;
+    NSMutableArray *stack = [program mutableCopy];
     for (int i=0; i<[stack count]; i++)
     {
 #define LAST_OBJECT [stack objectAtIndex: i]

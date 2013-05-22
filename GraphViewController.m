@@ -8,10 +8,12 @@
 
 #import "GraphViewController.h"
 #import "AxesView.h"
+#import "CalculatorProgramsTablesViewController.h"
+#import "CalculatorBrain.h"
+#import "CalculatorSettings.h"
+#import "Keys.h"
 
-static GraphViewController* settings = nil;
-
-@interface GraphViewController()
+@interface GraphViewController() <CalculatorProgramsTablesViewControllerDelegate>
 {
     NSUserDefaults *_userDefaults;
 }
@@ -31,20 +33,14 @@ static GraphViewController* settings = nil;
 @synthesize delegate = _delegate;
 @synthesize gvBrain = _gvBrain;
 @synthesize masterPopoverController = _masterPopoverController;
+@synthesize favoritesPopoverController = _favoritesPopoverController;
 
 
-
-
-+ (GraphViewController*) sharedSettings
+- (IBAction)addToFavorites:(id)sender
 {
-    if (settings == nil)
-    {
-        settings = [GraphViewController new];
-        settings.defaults = [NSUserDefaults standardUserDefaults];
-        [settings.defaults synchronize];
-    }
-    return settings;
+    [[CalculatorSettings sharedSettings] addFav: self.gvBrain.program forKey:FAVORITES_KEY];
 }
+
 
 - (void)setSplitViewBarButtonItem:(UIBarButtonItem *)splitViewBarButtonItem
 {
@@ -87,8 +83,21 @@ static GraphViewController* settings = nil;
     [self axesViewSetNeedDisplay];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.masterPopoverController = [[UIPopoverController alloc] initWithContentViewController:[self.splitViewController.viewControllers objectAtIndex:0]];
+    self.gvBrain = [[CalculatorBrain alloc]init];
     }
 }
+
+- (IBAction)onFavoritePressed:(UIBarButtonItem *)sender {
+    if (!self.favoritesPopoverController.isPopoverVisible)
+    {
+    [self performSegueWithIdentifier:@"Show Favorites Graphs" sender:sender];
+    }
+    else
+    {
+        [self.favoritesPopoverController dismissPopoverAnimated:YES];
+    }
+}
+
 
 -(void)test:(id)sender
 {
@@ -139,6 +148,26 @@ static GraphViewController* settings = nil;
     self.axesView.size = size;
     self.axesView.scale = [_userDefaults floatForKey:@"Last scale"];
     [self.axesView setNeedsDisplay];
+}
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString: @"Show Favorites Graphs"])
+    {
+        UIStoryboardPopoverSegue *pop = (UIStoryboardPopoverSegue*)segue;
+        self.favoritesPopoverController = pop.popoverController;
+        NSArray *programs = [[CalculatorSettings sharedSettings] getFavForKey: FAVORITES_KEY];
+        NSLog(@"favorites %@",[[CalculatorSettings sharedSettings] getFavForKey: FAVORITES_KEY]);
+        [segue.destinationViewController setPrograms: [programs mutableCopy]];
+        [segue.destinationViewController setDelegate:self];
+    }
+}
+
+- (void)calculatorProgramsTablesViewController:(CalculatorProgramsTablesViewController *)sender choseProgram:(id)program
+{
+    NSAssert(self.gvBrain, @"Brain could not be nil");
+    [self.gvBrain updateWithProgram:program];
+    [self axesViewSetNeedDisplay];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation

@@ -14,15 +14,16 @@
 
 - (void) pushOperand: (double) operand;
 - (void) pushVariable: (NSString *) variable;
+- (void) updateWithProgram: (NSArray*)program;
 - (void) deleteLastObject;
 - (double) performOperetion: (NSString*) operation;
 - (NSString *) secondPerformOperetion;
 - (NSString *) lastObject;
 - (void) clearMemory;
 
-
-@property (readonly)id program;
-@property (strong, nonatomic) NSArray *testVariableValue;
+//program is always garanted to be Property List 
+@property (nonatomic, readonly)NSMutableArray *program;
+@property (strong, nonatomic)  NSArray *testVariableValue;
 
 + (double) runProgram: (id) program;
 + (NSString *) runSecondProgram: (id) program;
